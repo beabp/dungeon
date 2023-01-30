@@ -24,6 +24,7 @@ import game.spell.SpellUnknowableException;
 import game.spellContainer.Knowledge;
 import game.spellContainer.Library;
 
+import static game.Domain.ENERGY;
 import static org.example.DungeonLoaderManualXML.*;
 
 public class DEMIURGOEJEMPLO {
@@ -68,6 +69,7 @@ public class DEMIURGOEJEMPLO {
                     wearables, crystalCarrier, new JewelryBag(2));
             wizard.addSpell(new FireAttack());
             wizard.addItem(new Weapon(1));
+            wizard.getJewelryBag().add(Necklace.createNecklace(Domain.LIFE, 5));
 
             demiurge.setWizard(wizard);
 

@@ -12,6 +12,8 @@ import game.object.Item;
 import game.object.Necklace;
 import game.object.Ring;
 import game.object.Weapon;
+import game.objectContainer.Container;
+import game.objectContainer.Wearables;
 import game.spell.Spell;
 
 import java.io.BufferedWriter;
@@ -40,21 +42,21 @@ public class MainSaveXML {
         StringBuilder demiurgeBuilder = new StringBuilder();
         String home = saveHome(demiurge);
         String rooms = saveRooms(demiurge);
-
+        String wizard = saveWizard(demiurge);
 
         String conditions = saveConditions(demiurge);
         String day = saveDay(demiurge);
         String endOfFine = "</demiurge>";
         demiurgeBuilder.append(home)
                 .append(rooms)
-
+                .append(wizard)
                 .append(conditions)
                 .append(day)
                 .append(endOfFine);
         String demiurgeStr = demiurgeBuilder.toString();
         try {
             Files.newBufferedWriter(filePath).flush();
-            Files.write(filePath, demiurgeStr.getBytes(), StandardOpenOption.WRITE);
+            Files.write(filePath, demiurgeStr.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException io) {
             io.printStackTrace();
         }
@@ -257,13 +259,12 @@ public class MainSaveXML {
         wizardXML.append("<crystalCarrier>")
                 .append("<capacity>").append(wizard.getCrystalCarrier().getValue()).append("</capacity>")
                 .append("<crystals>");
-        for (int i = 0; i < wizard.getCrystalCarrier().getValue(); i++) {
-            Item item = wizard.getCrystalCarrier().get(i);
-            wizardXML.append("<item type=\"").append(item.getClass().toString().toLowerCase()).append(">")
-                    .append("<domain element=\"").append(item.getDomain())
-                    .append("/>").append("<level value=\"").append(item.getValue()).append("/>")
-                    .append("</item>");
-        }
+        Iterator<Item> itemCrystalCarrier = wizard.getCrystalCarrier().iterator();
+        itemCrystalCarrier.forEachRemaining(item -> {
+            wizardXML.append("<crystal>")
+                    .append("<singa>").append(item.getValue()).append("</singa>")
+                    .append("</crystal>");
+        });
         wizardXML.append("</crystals>")
                 .append("</crystalCarrier>");
 
@@ -273,28 +274,41 @@ public class MainSaveXML {
                 .append("<necklacesMAX>").append(DungeonLoaderManualXML.MAX_NECKLACES).append("</necklacesMAX>")
                 .append("<ringsMAX>").append(DungeonLoaderManualXML.MAX_RINGS).append("</ringsMAX>")
                 .append("<items>");
-        int max = DungeonLoaderManualXML.MAX_WEAPONS + DungeonLoaderManualXML.MAX_NECKLACES + DungeonLoaderManualXML.MAX_RINGS;
-        for (int i = 0; i < max; i++) {
-            Item item = wizard.getWearables().get(i);
-            wizardXML.append("<item type=\"").append(item.getClass().toString().toLowerCase()).append(">")
-                    .append("<domain element=\"").append(item.getDomain()).append("/>")
-                    .append("<level value=\"").append(item.getValue()).append("/>")
+        StringBuilder itemBuilder = new StringBuilder();
+        Iterator<Item> itemWearables = wizard.getWearables().iterator();
+        itemWearables.forEachRemaining(item -> {
+            if (item instanceof Weapon) {
+                itemBuilder.append("weapon");
+            } else if (item instanceof Necklace) {
+                itemBuilder.append("necklace");
+            } else if (item instanceof Ring) {
+                itemBuilder.append("ring");
+            }
+            wizardXML.append("<item type=\"").append(itemBuilder).append("\">")
+                    .append("<domain element=\"").append(item.getDomain()).append("\"/>")
+                    .append("<level value=\"").append(item.getValue()).append("\"/>")
                     .append("</item>");
-        }
+        });
         wizardXML.append("</items>")
                 .append("</weareables>");
-
         //jewelryBag
         wizardXML.append("<jewelryBag>")
                 .append("<capacity>").append(wizard.getJewelryBag().getValue()).append("</capacity>")
                 .append("<items>");
-        for (int i = 0; i < wizard.getJewelryBag().getValue(); i++) {
-            Item item = wizard.getJewelryBag().get(i);
-            wizardXML.append("<item type=\"").append(item.getClass().toString().toLowerCase()).append(">")
-                    .append("<domain element=\"").append(item.getDomain()).append("/>")
-                    .append("<level value=\"").append(item.getValue()).append("/>")
+
+        Iterator<Item> itemJewelry = wizard.getJewelryBag().iterator();
+        StringBuilder itemBuilder2 = new StringBuilder();;
+        itemJewelry.forEachRemaining(item -> {
+            if (item instanceof Necklace) {
+                itemBuilder2.append("necklace");
+            } else if (item instanceof Ring) {
+                itemBuilder2.append("ring");
+            }
+            wizardXML.append("<item type=\"").append(itemBuilder2).append("\">")
+                    .append("<domain element=\"").append(item.getDomain()).append("\"/>")
+                    .append("<level value=\"").append(item.getValue()).append("\"/>")
                     .append("</item>");
-        }
+        });
         wizardXML.append("</items>")
                 .append("</jewelryBag>")
                 .append("</wizard>");

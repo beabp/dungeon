@@ -77,6 +77,45 @@
             </room>
         </rooms>
     </dungeon>
+    <wizard>
+        <name>Merlin</name>
+        <life>
+            <currentValue>10</currentValue>
+            <maxValue>10</maxValue>
+        </life>
+        <energy>
+            <currentValue>10</currentValue>
+            <maxValue>10</maxValue>
+        </energy>
+        <crystalCarrier>
+            <capacity>3</capacity>
+            <crystals>
+                <crystal>
+                    <singa>8</singa>
+                </crystal>
+            </crystals>
+        </crystalCarrier>
+        <weareables>
+            <weaponsMax>1</weaponsMax>
+            <necklacesMAX>1</necklacesMAX>
+            <ringsMAX>2</ringsMAX>
+            <items>
+                <item type="weapon">
+                    <domain element="NONE"/>
+                    <level value="1"/>
+                </item>
+            </items>
+        </weareables>
+        <jewelryBag>
+            <capacity>2</capacity>
+            <items>
+                <item type="necklace">
+                    <domain element="LIFE"/>
+                    <level value="5"/>
+                </item>
+            </items>
+        </jewelryBag>
+    </wizard>
     <conditions>
         <condition type="VisitAllRooms"/>
         <condition type="KillAllCreatures"/>
